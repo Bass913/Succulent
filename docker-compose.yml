@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+ 
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./backend/postgres:/var/lib/postgresql/data
+
+  backend:
+    image: node:latest
+    container_name: backend
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - 3333:3333
+      
+  frontend:
+    image: node:latest
+    container_name: front
+    ports:
+      - 5173:5173
+    volumes:
+      - ./front:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
+    tty: true
+    restart: on-failure
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8080:8080
