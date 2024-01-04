@@ -2,7 +2,7 @@ import User from 'App/Models/User'
 import Hash from '@ioc:Adonis/Core/Hash'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import RegisterValidator from 'App/Validators/RegisterValidator'
-
+import VerifyEmail from 'App/Mailers/VerifyEmail'
 
 export default class AuthController {
 
@@ -23,6 +23,7 @@ export default class AuthController {
         } catch (error) {
             response.unprocessableEntity({ error: 'L\'adresse email est déjà utilisée.' })
         }
+        await new VerifyEmail(email).send()
     }
 
     public async login({ auth, request, response }: HttpContextContract) {
