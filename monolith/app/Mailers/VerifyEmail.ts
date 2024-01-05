@@ -1,7 +1,9 @@
+import mjml from 'mjml'
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
-
+import View from '@ioc:Adonis/Core/View'
+import User from 'App/Models/User'
 export default class VerifyEmail extends BaseMailer {
-  constructor(private email: string) {
+  constructor(private user: User) {
     super()
   }
   /**
@@ -20,11 +22,14 @@ export default class VerifyEmail extends BaseMailer {
    * Use this method to prepare the email message. The method can
    * also be async.
    */
+
+  public html = mjml(View.renderSync('emails/welcome', { user: this.user, companyName: 'Succulente' })).html
+
   public prepare(message: MessageContract) {
     message
       .subject('Hello')
       .from('mailgun@sandbox-123.mailgun.org')
-      .to(this.email)
-      .html(`<h1>Testing some Mailgun awesomeness!</h1>`)
+      .to(this.user.email)
+      .html(this.html)
   }
 }

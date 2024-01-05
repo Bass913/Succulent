@@ -23,7 +23,8 @@ export default class AuthController {
         } catch (error) {
             response.unprocessableEntity({ error: 'L\'adresse email est déjà utilisée.' })
         }
-        await new VerifyEmail(email).send()
+        // Send confirmation mail
+        await new VerifyEmail(user).send()
     }
 
     public async login({ auth, request, response }: HttpContextContract) {
